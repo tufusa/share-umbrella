@@ -8,8 +8,15 @@ export const App = () => {
   const onDecodeQr = (result: Result) => {
     const base64 = result.getText();
     const content = atob(base64);
+    const isAuth = content === import.meta.env.VITE_AUTH_CONTENT;
+
     setQrContent(content);
-    setAuth(content === import.meta.env.VITE_AUTH_CONTENT);
+    setAuth(isAuth);
+    if (!isAuth) return;
+
+    fetch(`${import.meta.env.VITE_API_URL}/run`, { method: "POST" })
+      .then((res) => console.log(res))
+      .catch((reason) => console.log(reason));
   };
   const { ref } = useZxing({
     onDecodeResult: onDecodeQr,
