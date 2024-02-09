@@ -5,7 +5,14 @@ import styles from "./App.module.css";
 export const App = () => {
   const [qrContent, setQrContent] = useState<string | null>();
   const [auth, setAuth] = useState(false);
+  const closeTimeMs = 6000;
+  const reset = () => {
+    setQrContent(null);
+    setAuth(false);
+  };
   const onDecodeQr = (result: Result) => {
+    if (qrContent && auth) return;
+
     const base64 = result.getText();
     const content = atob(base64);
     const isAuth = content === import.meta.env.VITE_AUTH_CONTENT;
@@ -16,7 +23,18 @@ export const App = () => {
 
     fetch(`${import.meta.env.VITE_API_URL}/run`, { method: "POST" })
       .then((res) => console.log(res))
-      .catch((reason) => console.log(reason));
+      .then(
+        (): Promise<void> =>
+          new Promise((resolve) => setTimeout(resolve, closeTimeMs))
+      )
+      .then(() => {
+        console.log("may closed");
+        reset();
+      })
+      .catch((reason) => {
+        console.log(reason);
+        reset();
+      });
   };
   const { ref } = useZxing({
     onDecodeResult: onDecodeQr,
@@ -24,7 +42,7 @@ export const App = () => {
 
   return (
     <main className={styles.main}>
-      <span className={styles['qr-message']}>QRコードをかざしてください</span>
+      <span className={styles["qr-message"]}>QRコードをかざしてください</span>
       <video
         ref={ref}
         className={`${styles.video} ${
@@ -34,7 +52,9 @@ export const App = () => {
       <div className={styles.status}>
         <span>Result:{qrContent ?? "______"}</span>
         <span>Auth:{!qrContent ? "______" : auth ? "成功" : "失敗"}</span>
-        {qrContent && auth && <span className={styles['lock-open']}>ロックが開きます</span>}
+        {qrContent && auth && (
+          <span className={styles["lock-open"]}>ロックが開きます</span>
+        )}
       </div>
     </main>
   );
