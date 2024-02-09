@@ -5,12 +5,12 @@ import styles from "./App.module.css";
 export const App = () => {
   const [qrContent, setQrContent] = useState<string | null>();
   const [auth, setAuth] = useState(false);
-  const closeTimeMs = 6000;
+  const closeTimeMs = 7000;
   const reset = () => {
     setQrContent(null);
     setAuth(false);
   };
-  const onDecodeQr = (result: Result) => {
+  const onDecodeQr = async (result: Result) => {
     if (qrContent && auth) return;
 
     const base64 = result.getText();
@@ -21,20 +21,15 @@ export const App = () => {
     setAuth(isAuth);
     if (!isAuth) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/run`, { method: "POST" })
-      .then((res) => console.log(res))
-      .then(
-        (): Promise<void> =>
-          new Promise((resolve) => setTimeout(resolve, closeTimeMs))
-      )
-      .then(() => {
-        console.log("may closed");
-        reset();
+    await fetch(`${import.meta.env.VITE_API_URL}/run`, { method: "POST" })
+      .then((res) => {
+        console.log(res);
       })
       .catch((reason) => {
         console.log(reason);
-        reset();
       });
+
+    setTimeout(reset, closeTimeMs);
   };
   const { ref } = useZxing({
     onDecodeResult: onDecodeQr,
