@@ -24,6 +24,7 @@ export const App = () => {
 
   return (
     <main className={styles.main}>
+      <span className={styles['qr-message']}>QRコードをかざしてください</span>
       <video
         ref={ref}
         className={`${styles.video} ${
