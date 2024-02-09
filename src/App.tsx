@@ -24,10 +24,16 @@ export const App = () => {
 
   return (
     <main className={styles.main}>
-      <video ref={ref} className={styles.video} />
+      <video
+        ref={ref}
+        className={`${styles.video} ${
+          qrContent && auth && styles["video-success"]
+        }`}
+      />
       <div className={styles.status}>
-        <span>Result:{qrContent}</span>
-        <span>Auth:{!qrContent ? "" : auth ? "成功" : "失敗"}</span>
+        <span>Result:{qrContent ?? "______"}</span>
+        <span>Auth:{!qrContent ? "______" : auth ? "成功" : "失敗"}</span>
+        {qrContent && auth && <span className={styles['lock-open']}>ロックが開きます</span>}
       </div>
     </main>
   );

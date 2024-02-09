@@ -1,5 +1,17 @@
+:root {
+  --background-color: #202020;
+  --text-color: lightyellow;
+  --success-color: greenyellow;
+  background-color: var(--background-color);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .main {
-  margin: 2rem;
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,14 +22,25 @@
   height: 30rem;
   background: black;
   object-fit: cover;
+  border: var(--background-color) 10px solid;
+}
+
+.video-success {
+  border-color: var(--success-color);
 }
 
 .status {
   margin-top: 1.5rem;
   font-size: 1.5rem;
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
+}
+
+.lock-open {
+  font-weight: bold;
+  color: var(--success-color);
 }
